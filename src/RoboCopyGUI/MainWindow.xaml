@@ -107,24 +107,22 @@
                                         Background="Gray" />
 
                                 <TextBlock Grid.Row="0" Grid.Column="1"
-                                           Text="{x:Bind Source}"
+                                           Text="{x:Bind Source, Mode=OneWay}"
                                            Style="{StaticResource BodyStrongTextBlockStyle}"
                                            TextTrimming="CharacterEllipsis" />
                                 <TextBlock Grid.Row="1" Grid.Column="1"
-                                           Text="{x:Bind Destination}"
+                                           Text="{x:Bind Destination, Mode=OneWay}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            TextTrimming="CharacterEllipsis" FontSize="12" />
                                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
-                                    <TextBlock Text="{x:Bind Status}" FontSize="11" />
-                                    <TextBlock Text="{x:Bind PresetName}" FontSize="11"
+                                    <TextBlock Text="{x:Bind Status, Mode=OneWay}" FontSize="11" />
+                                    <TextBlock Text="{x:Bind PresetName, Mode=OneWay}" FontSize="11"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
-                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Height="24">
-                                    <Border CornerRadius="12" Background="#22FFFFFF" />
-                                    <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}" Maximum="100"
-                                                 Height="24" CornerRadius="12"
-                                                 Foreground="{ThemeResource SystemAccentColor}"
-                                                 Background="Transparent" BorderThickness="0" />
+
+                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0">
+                                    <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}"
+                                                 Maximum="100" Style="{StaticResource FatProgressBar}" />
                                     <TextBlock FontSize="12" FontWeight="Bold" Foreground="White"
                                                HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Run Text="{x:Bind ProgressPercent, Mode=OneWay}" /><Run Text="%" />
@@ -143,21 +141,17 @@
                 </ListView>
 
                 <StackPanel Grid.Row="3" Spacing="8" Margin="0,8,0,0">
-                    <Grid Height="24" CornerRadius="12">
-                        <Border CornerRadius="12" Background="#22FFFFFF" />
+                    <Grid>
                         <ProgressBar Value="{Binding OverallProgress}" Maximum="100"
-                                     Height="24" CornerRadius="12"
-                                     Foreground="{ThemeResource SystemAccentColor}"
-                                     Background="Transparent" BorderThickness="0" />
+                                     Style="{StaticResource FatProgressBar}" />
                         <StackPanel Orientation="Horizontal" Spacing="6"
                                     HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock FontSize="12" FontWeight="Bold" Foreground="White">
-                                <Run Text="{Binding OverallProgressText}" />
-                            </TextBlock>
+                            <TextBlock FontSize="12" FontWeight="Bold" Foreground="White"
+                                       Text="{Binding OverallProgressText}" />
                             <TextBlock FontSize="12" Foreground="#AAFFFFFF"
                                        VerticalAlignment="Center"
                                        Text="{Binding StatusText}" TextTrimming="CharacterEllipsis"
-                                       MaxWidth="250" />
+                                       MaxWidth="200" />
                         </StackPanel>
                     </Grid>
 

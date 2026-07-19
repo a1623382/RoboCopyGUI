@@ -17,6 +17,26 @@
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:BytesToHumanConverter x:Key="BytesToHumanConverter" />
             <converters:DurationConverter x:Key="DurationConverter" />
+
+            <Style x:Key="FatProgressBar" TargetType="ProgressBar">
+                <Setter Property="Minimum" Value="0" />
+                <Setter Property="Maximum" Value="100" />
+                <Setter Property="Height" Value="24" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ProgressBar">
+                            <Border CornerRadius="12" Background="#22FFFFFF" Padding="0">
+                                <Border x:Name="PART_Track" CornerRadius="12">
+                                    <Border x:Name="PART_Indicator" CornerRadius="12"
+                                            Background="{TemplateBinding Foreground}"
+                                            HorizontalAlignment="Left" />
+                                </Border>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
