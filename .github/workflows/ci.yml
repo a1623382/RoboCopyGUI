@@ -27,6 +27,7 @@ jobs:
       run: dotnet restore ${{ env.PROJECT_PATH }} -r win-x64
 
     - name: Build
+      id: build
       run: >
         dotnet build ${{ env.PROJECT_PATH }}
         -c Release
@@ -34,8 +35,36 @@ jobs:
         --no-restore
         -p:WindowsAppSDKSelfContained=true
         -p:SelfContained=true
+        /bl
+
+    - name: Dump XAML compiler output on failure
+      if: failure() && steps.build.outcome == 'failure'
+      shell: pwsh
+      run: |
+        $outputJson = "src/RoboCopyGUI/obj/Release/net8.0-windows10.0.22621.0/win-x64/output.json"
+        if (Test-Path $outputJson) {
+          Write-Host "=== XAML Compiler output.json ==="
+          Get-Content $outputJson -Raw
+        } else {
+          Write-Host "output.json not found at $outputJson"
+        }
+        Write-Host ""
+        $inputJson = "src/RoboCopyGUI/obj/Release/net8.0-windows10.0.22621.0/win-x64/input.json"
+        if (Test-Path $inputJson) {
+          Write-Host "=== XAML Compiler input.json ==="
+          Get-Content $inputJson -Raw
+        }
+
+    - name: Upload build log on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-log
+        path: msbuild.binlog
+        retention-days: 3
 
     - name: Publish
+      if: success()
       run: >
         dotnet publish ${{ env.PROJECT_PATH }}
         -c Release
@@ -46,6 +75,7 @@ jobs:
         -o publish/
 
     - name: Upload build artifact
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: RoboCopyGUI-ci-${{ github.sha }}
