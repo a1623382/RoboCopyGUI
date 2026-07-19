@@ -23,7 +23,6 @@ public sealed partial class MainWindow : Window
         MainGrid.DataContext = _viewModel;
 
         ExtendsContentIntoTitleBar = true;
-        SetTitleBar(TitleArea);
 
         TrySetMicaBackdrop();
 
@@ -62,6 +61,51 @@ public sealed partial class MainWindow : Window
         _viewModel.AddTaskCommand.Execute(null);
         SourceBox.Text = string.Empty;
         DestBox.Text = string.Empty;
+    }
+
+    private void StartQueue_Click(object sender, RoutedEventArgs e)
+        => _viewModel.StartQueueCommand.Execute(null);
+
+    private void CancelQueue_Click(object sender, RoutedEventArgs e)
+        => _viewModel.CancelQueueCommand.Execute(null);
+
+    private void SaveQueue_Click(object sender, RoutedEventArgs e)
+        => _viewModel.SaveQueueCommand.Execute(null);
+
+    private void MoveUp_Click(object sender, RoutedEventArgs e)
+        => _viewModel.MoveUpCommand.Execute(_viewModel.SelectedTask);
+
+    private void MoveDown_Click(object sender, RoutedEventArgs e)
+        => _viewModel.MoveDownCommand.Execute(_viewModel.SelectedTask);
+
+    private void Duplicate_Click(object sender, RoutedEventArgs e)
+        => _viewModel.DuplicateCommand.Execute(_viewModel.SelectedTask);
+
+    private void Remove_Click(object sender, RoutedEventArgs e)
+        => _viewModel.RemoveCommand.Execute(_viewModel.SelectedTask);
+
+    private async void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var panel = new Controls.SettingsPanel
+            {
+                DataContext = _viewModel,
+                Settings = _viewModel.Settings
+            };
+
+            var dialog = new ContentDialog
+            {
+                Title = "设置",
+                Content = panel,
+                CloseButtonText = "关闭",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = MainGrid.XamlRoot
+            };
+
+            await dialog.ShowAsync();
+        }
+        catch { }
     }
 
     private async void BrowseSource_Click(object sender, RoutedEventArgs e)
