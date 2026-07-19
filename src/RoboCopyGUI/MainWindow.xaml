@@ -71,7 +71,7 @@
                 <ListView Grid.Row="2" Padding="0" SelectionMode="Single" IsItemClickEnabled="True"
                           ItemsSource="{Binding Tasks}" SelectedItem="{Binding SelectedTask, Mode=TwoWay}">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="vm:CopyTaskViewModel">
                             <Grid Padding="8,6" CornerRadius="6" Margin="0,0,0,4">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -87,27 +87,26 @@
 
                                 <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
                                         Width="4" CornerRadius="2" Margin="0,0,8,0"
-                                        Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
+                                        Background="Gray" />
 
                                 <TextBlock Grid.Row="0" Grid.Column="1"
-                                           Text="{Binding Source}"
+                                           Text="{x:Bind Source}"
                                            Style="{StaticResource BodyStrongTextBlockStyle}"
                                            TextTrimming="CharacterEllipsis" />
                                 <TextBlock Grid.Row="1" Grid.Column="1"
-                                           Text="{Binding Destination}"
+                                           Text="{x:Bind Destination}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            TextTrimming="CharacterEllipsis" FontSize="12" />
                                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
-                                    <TextBlock Text="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
-                                               FontSize="11"
-                                               Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
-                                    <TextBlock Text="{Binding PresetName}"
+                                    <TextBlock Text="{x:Bind Status}"
+                                               FontSize="11" />
+                                    <TextBlock Text="{x:Bind PresetName}"
                                                FontSize="11"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
                                 <ProgressBar Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
-                                             Value="{Binding ProgressPercent}" Maximum="100"
-                                             Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibilityConverter}}"
+                                             Value="{x:Bind ProgressPercent}" Maximum="100"
+                                             Visibility="{x:Bind IsRunning}"
                                              Margin="0,4,0,0" Height="4" />
                             </Grid>
                         </DataTemplate>
@@ -156,12 +155,11 @@
                     <ListView Grid.Row="1" Padding="0" IsItemClickEnabled="False" SelectionMode="None"
                               ItemsSource="{Binding LogEntries}">
                         <ListView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="m:LogEntry">
                                 <StackPanel Orientation="Horizontal" Spacing="8" Padding="2">
-                                    <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm:ss'}" FontSize="11" FontFamily="Consolas"
+                                    <TextBlock Text="{x:Bind Timestamp.Hour}" FontSize="11" FontFamily="Consolas"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" MinWidth="60" />
-                                    <TextBlock Text="{Binding Message}" FontSize="12" FontFamily="Consolas"
-                                               Foreground="{Binding Level, Converter={StaticResource LogLevelToColorConverter}}"
+                                    <TextBlock Text="{x:Bind Message}" FontSize="12" FontFamily="Consolas"
                                                TextWrapping="Wrap" />
                                 </StackPanel>
                             </DataTemplate>
