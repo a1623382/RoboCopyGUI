@@ -1,9 +1,6 @@
-using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using RoboCopyGUI.Controls;
 using RoboCopyGUI.ViewModels;
 using WinRT.Interop;
 
@@ -24,7 +21,7 @@ public sealed partial class MainWindow : Window
         MainGrid.DataContext = _viewModel;
 
         ExtendsContentIntoTitleBar = true;
-        SetTitleBar(AppTitleBar);
+        SetTitleBar(TitleArea);
 
         TrySetMicaBackdrop();
 
@@ -64,64 +61,6 @@ public sealed partial class MainWindow : Window
             _micaController.AddSystemBackdropTarget(
                 this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
         }
-    }
-
-    private async void Settings_Click(object sender, RoutedEventArgs e)
-    {
-        var settingsPanel = new SettingsPanel
-        {
-            DataContext = _viewModel,
-            Settings = _viewModel.Settings
-        };
-
-        var dialog = new ContentDialog
-        {
-            Title = "Settings",
-            Content = settingsPanel,
-            CloseButtonText = "Close",
-            DefaultButton = ContentDialogButton.Close,
-            XamlRoot = MainGrid.XamlRoot
-        };
-
-        await dialog.ShowAsync();
-    }
-
-    private async void LoadQueue_Click(object sender, RoutedEventArgs e)
-    {
-        var picker = new FileOpenPicker();
-        var hwnd = WindowNative.GetWindowHandle(this);
-        InitializeWithWindow.Initialize(picker, hwnd);
-        picker.FileTypeFilter.Add(".json");
-
-        var file = await picker.PickSingleFileAsync();
-        if (file is not null)
-            await _viewModel.ImportQueueCommand.ExecuteAsync(file.Path);
-    }
-
-    private async void ExportBat_Click(object sender, RoutedEventArgs e)
-    {
-        var picker = new FileSavePicker();
-        var hwnd = WindowNative.GetWindowHandle(this);
-        InitializeWithWindow.Initialize(picker, hwnd);
-        picker.FileTypeChoices.Add("Batch File", [".bat"]);
-        picker.SuggestedFileName = "robocopy_tasks.bat";
-
-        var file = await picker.PickSaveFileAsync();
-        if (file is not null)
-            await _viewModel.ExportBatCommand.ExecuteAsync(file.Path);
-    }
-
-    private async void ExportPs1_Click(object sender, RoutedEventArgs e)
-    {
-        var picker = new FileSavePicker();
-        var hwnd = WindowNative.GetWindowHandle(this);
-        InitializeWithWindow.Initialize(picker, hwnd);
-        picker.FileTypeChoices.Add("PowerShell Script", [".ps1"]);
-        picker.SuggestedFileName = "robocopy_tasks.ps1";
-
-        var file = await picker.PickSaveFileAsync();
-        if (file is not null)
-            await _viewModel.ExportPowerShellCommand.ExecuteAsync(file.Path);
     }
 
     private void Window_Closed(object sender, WindowEventArgs args)
