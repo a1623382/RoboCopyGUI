@@ -32,6 +32,7 @@ jobs:
         -c Release
         -r win-x64
         --no-restore
+        -p:Platform=x64
         -p:WindowsAppSDKSelfContained=true
         -p:SelfContained=true
 
@@ -41,6 +42,7 @@ jobs:
         -c Release
         -r win-x64
         --no-build
+        -p:Platform=x64
         -p:WindowsAppSDKSelfContained=true
         -p:SelfContained=true
         -o publish/
