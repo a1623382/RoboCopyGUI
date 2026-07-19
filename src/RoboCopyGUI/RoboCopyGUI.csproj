@@ -12,6 +12,7 @@
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\Assets\app.ico</ApplicationIcon>
     <RootNamespace>RoboCopyGUI</RootNamespace>
     <AssemblyName>RoboCopyGUI</AssemblyName>
     <Nullable>enable</Nullable>
