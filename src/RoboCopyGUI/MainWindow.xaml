@@ -9,24 +9,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Window.Resources>
-        <Style x:Key="CleanProgressBar" TargetType="ProgressBar">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ProgressBar">
-                        <Grid CornerRadius="12" Background="#22FFFFFF" ClipToBounds="True">
-                            <Border x:Name="PART_Track" CornerRadius="12" />
-                            <Border x:Name="PART_Indicator" CornerRadius="12"
-                                    Background="{TemplateBinding Foreground}"
-                                    HorizontalAlignment="Left" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}" />
-        </Style>
-    </Window.Resources>
-
     <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -138,8 +120,11 @@
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
                                 <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Height="24">
+                                    <Border CornerRadius="12" Background="#22FFFFFF" />
                                     <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}" Maximum="100"
-                                                 Height="24" Style="{StaticResource CleanProgressBar}" />
+                                                 Height="24" CornerRadius="12"
+                                                 Foreground="{ThemeResource SystemAccentColor}"
+                                                 Background="Transparent" BorderThickness="0" />
                                     <TextBlock FontSize="12" FontWeight="Bold" Foreground="White"
                                                HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Run Text="{x:Bind ProgressPercent, Mode=OneWay}" /><Run Text="%" />
@@ -159,8 +144,11 @@
 
                 <StackPanel Grid.Row="3" Spacing="8" Margin="0,8,0,0">
                     <Grid Height="24" CornerRadius="12">
+                        <Border CornerRadius="12" Background="#22FFFFFF" />
                         <ProgressBar Value="{Binding OverallProgress}" Maximum="100"
-                                     Height="24" Style="{StaticResource CleanProgressBar}" />
+                                     Height="24" CornerRadius="12"
+                                     Foreground="{ThemeResource SystemAccentColor}"
+                                     Background="Transparent" BorderThickness="0" />
                         <StackPanel Orientation="Horizontal" Spacing="6"
                                     HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock FontSize="12" FontWeight="Bold" Foreground="White">
