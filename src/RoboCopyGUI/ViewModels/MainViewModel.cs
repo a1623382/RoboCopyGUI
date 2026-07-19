@@ -31,6 +31,13 @@ public sealed partial class MainViewModel : ObservableObject
         await LoadPresetsAsync();
         await LoadQueueAsync();
 
+        var completed = Tasks.Where(t =>
+            t.Status is CopyTaskStatus.Completed or CopyTaskStatus.Failed or CopyTaskStatus.Cancelled).ToList();
+        foreach (var t in completed)
+            Tasks.Remove(t);
+        if (completed.Count > 0)
+            _logger.Info($"Auto-cleared {completed.Count} completed task(s) on startup.");
+
         if (_settingsService.Current.AutoStartQueueOnLaunch && Tasks.Count > 0)
             await StartQueueCommand.ExecuteAsync(null);
     }
