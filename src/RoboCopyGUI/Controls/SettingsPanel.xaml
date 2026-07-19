@@ -15,16 +15,16 @@
             <TextBlock Text="General" Style="{StaticResource BodyStrongTextBlockStyle}" />
             <StackPanel Spacing="12" Padding="0,0,0,12">
                 <ToggleSwitch Header="Auto-save Queue"
-                              IsOn="{x:Bind Settings.AutoSaveQueue, Mode=TwoWay}"
+                              x:Name="AutoSaveToggle"
                               OnContent="Enabled" OffContent="Disabled" />
                 <ToggleSwitch Header="Confirm Before Delete"
-                              IsOn="{x:Bind Settings.ConfirmBeforeDelete, Mode=TwoWay}"
+                              x:Name="ConfirmDeleteToggle"
                               OnContent="Enabled" OffContent="Disabled" />
                 <ToggleSwitch Header="Auto-start Queue on Launch"
-                              IsOn="{x:Bind Settings.AutoStartQueueOnLaunch, Mode=TwoWay}"
+                              x:Name="AutoStartToggle"
                               OnContent="Enabled" OffContent="Disabled" />
                 <ToggleSwitch Header="Show Notifications"
-                              IsOn="{x:Bind Settings.ShowNotifications, Mode=TwoWay}"
+                              x:Name="NotificationsToggle"
                               OnContent="Enabled" OffContent="Disabled" />
             </StackPanel>
 
@@ -32,7 +32,7 @@
             <StackPanel Spacing="12" Padding="0,0,0,12">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <TextBlock Text="Max Log Entries:" VerticalAlignment="Center" MinWidth="140" />
-                    <NumberBox Value="{x:Bind Settings.MaxLogEntries, Mode=TwoWay}"
+                    <NumberBox x:Name="MaxLogEntriesBox"
                                Minimum="100" Maximum="100000" Width="120"
                                SpinButtonPlacementMode="Inline" />
                 </StackPanel>
@@ -45,10 +45,10 @@
             <TextBlock Text="Default Paths" Style="{StaticResource BodyStrongTextBlockStyle}" />
             <StackPanel Spacing="12" Padding="0,0,0,12">
                 <TextBox Header="Default Source Path"
-                         Text="{x:Bind Settings.DefaultSourcePath, Mode=TwoWay}"
+                         x:Name="DefaultSourceBox"
                          PlaceholderText="C:\Source" />
                 <TextBox Header="Default Destination Path"
-                         Text="{x:Bind Settings.DefaultDestinationPath, Mode=TwoWay}"
+                         x:Name="DefaultDestBox"
                          PlaceholderText="D:\Backup" />
             </StackPanel>
 

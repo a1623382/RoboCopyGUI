@@ -13,15 +13,49 @@ public sealed partial class SettingsPanel : UserControl
     public SettingsPanel()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        LoadFromSettings();
+    }
+
+    private void LoadFromSettings()
+    {
+        AutoSaveToggle.IsOn = Settings.AutoSaveQueue;
+        ConfirmDeleteToggle.IsOn = Settings.ConfirmBeforeDelete;
+        AutoStartToggle.IsOn = Settings.AutoStartQueueOnLaunch;
+        NotificationsToggle.IsOn = Settings.ShowNotifications;
+        MaxLogEntriesBox.Value = Settings.MaxLogEntries;
+        DefaultSourceBox.Text = Settings.DefaultSourcePath;
+        DefaultDestBox.Text = Settings.DefaultDestinationPath;
+    }
+
+    private void SaveToSettings()
+    {
+        Settings.AutoSaveQueue = AutoSaveToggle.IsOn;
+        Settings.ConfirmBeforeDelete = ConfirmDeleteToggle.IsOn;
+        Settings.AutoStartQueueOnLaunch = AutoStartToggle.IsOn;
+        Settings.ShowNotifications = NotificationsToggle.IsOn;
+        Settings.MaxLogEntries = MaxLogEntriesBox.Value;
+        Settings.DefaultSourcePath = DefaultSourceBox.Text;
+        Settings.DefaultDestinationPath = DefaultDestBox.Text;
     }
 
     private MainViewModel? GetViewModel() => DataContext as MainViewModel;
 
     private void TrimLog_Click(object sender, RoutedEventArgs e)
-        => GetViewModel()?.TrimLogCommand.Execute(null);
+    {
+        SaveToSettings();
+        GetViewModel()?.TrimLogCommand.Execute(null);
+    }
 
     private async void SaveSettings_Click(object sender, RoutedEventArgs e)
-        => await (GetViewModel()?.SaveSettingsCommand.ExecuteAsync(null) ?? Task.CompletedTask);
+    {
+        SaveToSettings();
+        await (GetViewModel()?.SaveSettingsCommand.ExecuteAsync(null) ?? Task.CompletedTask);
+    }
 
     private async void ResetSettings_Click(object sender, RoutedEventArgs e)
     {
@@ -40,7 +74,10 @@ public sealed partial class SettingsPanel : UserControl
 
         var result = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
+        {
             await vm.ResetSettingsCommand.ExecuteAsync(null);
+            LoadFromSettings();
+        }
     }
 
     private async Task<string?> PickSaveFileAsync(string fileType, string suggestedName)
