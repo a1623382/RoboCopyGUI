@@ -196,8 +196,8 @@
                 </StackPanel>
             </Grid>
 
-            <GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Center"
-                          ResizeDirection="Columns" />
+            <Border Grid.Column="1" Width="1" HorizontalAlignment="Center"
+                    Background="{ThemeResource CardStrokeColorDefaultBrush}" />
 
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>

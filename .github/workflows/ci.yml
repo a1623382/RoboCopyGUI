@@ -32,7 +32,6 @@ jobs:
         -c Release
         -r win-x64
         --no-restore
-        -v detailed
         -p:WindowsAppSDKSelfContained=true
         -p:SelfContained=true
 
