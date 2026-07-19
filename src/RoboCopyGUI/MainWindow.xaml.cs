@@ -1,11 +1,8 @@
-using Microsoft.UI;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using RoboCopyGUI.ViewModels;
-using WinRT.Interop;
+using WinRT;
 
 namespace RoboCopyGUI;
 
@@ -36,27 +33,16 @@ public sealed partial class MainWindow : Window
         if (!MicaController.IsSupported())
             return;
 
-        _backdropConfiguration = new SystemBackdropConfiguration();
-
-        var root = MainGrid.XamlRoot;
-        if (root is not null)
+        _backdropConfiguration = new SystemBackdropConfiguration
         {
-            var uiSettings = new Microsoft.UI.ViewManagement.UISettings();
-            var background = uiSettings.GetColorValue(Microsoft.UI.ViewManagement.UIColorType.Background);
-            _backdropConfiguration.Theme = background.R < 128
-                ? SystemBackdropTheme.Dark
-                : SystemBackdropTheme.Light;
-        }
-        else
-        {
-            _backdropConfiguration.Theme = SystemBackdropTheme.Dark;
-        }
+            Theme = SystemBackdropTheme.Dark
+        };
 
         _micaController = new MicaController();
         _micaController.SetSystemBackdropConfiguration(_backdropConfiguration);
 
         _micaController.AddSystemBackdropTarget(
-            this.As<ICompositionSupportsSystemBackdrop>());
+            this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
     }
 
     private void Window_Closed(object sender, WindowEventArgs args)
