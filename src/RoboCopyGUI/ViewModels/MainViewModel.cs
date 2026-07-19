@@ -13,6 +13,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly AppSettingsService _settingsService = new();
     private readonly TaskQueuePersistence _queuePersistence = new();
     private readonly BatchScriptExporter _batchExporter = new();
+    private readonly FileLogger _logger = new();
     private CancellationTokenSource? _cts;
     private bool _isProcessingQueue;
 
@@ -23,6 +24,9 @@ public sealed partial class MainViewModel : ObservableObject
 
     private async Task InitializeAsync()
     {
+        _logger.Info("=== RoboCopy GUI started ===");
+        _logger.Info($"Log directory: {_logger.LogDirectory}");
+
         await _settingsService.LoadAsync();
         await LoadPresetsAsync();
         await LoadQueueAsync();
@@ -556,6 +560,16 @@ public sealed partial class MainViewModel : ObservableObject
             Message = message,
             TaskId = taskId
         });
+
+        var levelStr = level switch
+        {
+            LogLevel.Info => "INFO",
+            LogLevel.Warning => "WARN",
+            LogLevel.Error => "ERROR",
+            LogLevel.Success => "INFO",
+            _ => "INFO"
+        };
+        _logger.Write(levelStr, message);
 
         if (LogEntries.Count > Settings.MaxLogEntries * 1.2)
             TrimLog();

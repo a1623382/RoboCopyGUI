@@ -32,19 +32,27 @@ public sealed partial class MainWindow : Window
 
     private void TrySetMicaBackdrop()
     {
-        if (!MicaController.IsSupported())
-            return;
-
-        _backdropConfiguration = new SystemBackdropConfiguration
+        try
         {
-            Theme = SystemBackdropTheme.Dark
-        };
+            if (!MicaController.IsSupported())
+                return;
 
-        _micaController = new MicaController();
-        _micaController.SetSystemBackdropConfiguration(_backdropConfiguration);
+            _backdropConfiguration = new SystemBackdropConfiguration
+            {
+                Theme = SystemBackdropTheme.Dark
+            };
 
-        _micaController.AddSystemBackdropTarget(
-            this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+            _micaController = new MicaController();
+            _micaController.SetSystemBackdropConfiguration(_backdropConfiguration);
+
+            _micaController.AddSystemBackdropTarget(
+                this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+        }
+        catch
+        {
+            _micaController?.Dispose();
+            _micaController = null;
+        }
     }
 
     private void AddTask_Click(object sender, RoutedEventArgs e)
@@ -58,22 +66,30 @@ public sealed partial class MainWindow : Window
 
     private async void BrowseSource_Click(object sender, RoutedEventArgs e)
     {
-        var folder = await PickFolderAsync();
-        if (folder is not null)
+        try
         {
-            SourceBox.Text = folder.Path;
-            _viewModel.SourcePath = folder.Path;
+            var folder = await PickFolderAsync();
+            if (folder is not null)
+            {
+                SourceBox.Text = folder.Path;
+                _viewModel.SourcePath = folder.Path;
+            }
         }
+        catch { }
     }
 
     private async void BrowseDest_Click(object sender, RoutedEventArgs e)
     {
-        var folder = await PickFolderAsync();
-        if (folder is not null)
+        try
         {
-            DestBox.Text = folder.Path;
-            _viewModel.DestinationPath = folder.Path;
+            var folder = await PickFolderAsync();
+            if (folder is not null)
+            {
+                DestBox.Text = folder.Path;
+                _viewModel.DestinationPath = folder.Path;
+            }
         }
+        catch { }
     }
 
     private async Task<Windows.Storage.StorageFolder?> PickFolderAsync()
