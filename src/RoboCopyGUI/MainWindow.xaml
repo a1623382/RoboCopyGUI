@@ -6,7 +6,6 @@
     xmlns:vm="using:RoboCopyGUI.ViewModels"
     xmlns:m="using:RoboCopyGUI.Models"
     xmlns:ctrl="using:RoboCopyGUI.Controls"
-    xmlns:ic="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -15,7 +14,7 @@
         <vm:MainViewModel x:Key="ViewModel" />
     </Window.Resources>
 
-    <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="MainGrid" DataContext="{StaticResource ViewModel}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
