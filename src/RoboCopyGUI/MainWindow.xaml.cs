@@ -73,16 +73,16 @@ public sealed partial class MainWindow : Window
         => _viewModel.SaveQueueCommand.Execute(null);
 
     private void MoveUp_Click(object sender, RoutedEventArgs e)
-        => _viewModel.MoveUpCommand.Execute(_viewModel.SelectedTask);
+        => _viewModel.MoveTaskUpCommand.Execute(_viewModel.SelectedTask);
 
     private void MoveDown_Click(object sender, RoutedEventArgs e)
-        => _viewModel.MoveDownCommand.Execute(_viewModel.SelectedTask);
+        => _viewModel.MoveTaskDownCommand.Execute(_viewModel.SelectedTask);
 
     private void Duplicate_Click(object sender, RoutedEventArgs e)
-        => _viewModel.DuplicateCommand.Execute(_viewModel.SelectedTask);
+        => _viewModel.DuplicateTaskCommand.Execute(_viewModel.SelectedTask);
 
     private void Remove_Click(object sender, RoutedEventArgs e)
-        => _viewModel.RemoveCommand.Execute(_viewModel.SelectedTask);
+        => _viewModel.RemoveTaskCommand.Execute(_viewModel.SelectedTask);
 
     private async void Settings_Click(object sender, RoutedEventArgs e)
     {
