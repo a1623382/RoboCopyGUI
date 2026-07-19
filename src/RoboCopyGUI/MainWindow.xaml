@@ -115,9 +115,11 @@
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
 
-                                <Grid Grid.Row="3" Grid.Column="0" Margin="0,6,0,0">
-                                    <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}"
-                                                 Maximum="100" Style="{StaticResource FatProgressBar}" />
+                                <Grid Grid.Row="3" Grid.Column="0" Margin="0,6,0,0" Height="24">
+                                    <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}" Maximum="100"
+                                                 Height="24" CornerRadius="12"
+                                                 Foreground="{ThemeResource SystemAccentColor}"
+                                                 Background="#22FFFFFF" BorderThickness="0" />
                                     <TextBlock FontSize="12" FontWeight="Bold" Foreground="White"
                                                HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Run Text="{x:Bind ProgressPercent, Mode=OneWay}" /><Run Text="%" />
@@ -136,9 +138,11 @@
                 </ListView>
 
                 <StackPanel Grid.Row="3" Spacing="8" Margin="0,8,0,0">
-                    <Grid>
+                    <Grid Height="24">
                         <ProgressBar Value="{Binding OverallProgress}" Maximum="100"
-                                     Style="{StaticResource FatProgressBar}" />
+                                     Height="24" CornerRadius="12"
+                                     Foreground="{ThemeResource SystemAccentColor}"
+                                     Background="#22FFFFFF" BorderThickness="0" />
                         <StackPanel Orientation="Horizontal" Spacing="6"
                                     HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock FontSize="12" FontWeight="Bold" Foreground="White"

@@ -120,11 +120,14 @@ public sealed partial class MainWindow : Window
     {
         try
         {
-            var folder = await PickFolderAsync();
-            if (folder is not null)
+            var picker = new FileOpenPicker();
+            InitializeWithWindow.Initialize(picker, GetWindowHandle());
+            picker.FileTypeFilter.Add("*");
+            var file = await picker.PickSingleFileAsync();
+            if (file is not null)
             {
-                SourceBox.Text = folder.Path;
-                _viewModel.SourcePath = folder.Path;
+                SourceBox.Text = file.Path;
+                _viewModel.SourcePath = file.Path;
             }
         }
         catch { }
