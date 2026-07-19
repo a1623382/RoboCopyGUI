@@ -10,11 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Window.Resources>
-        <vm:MainViewModel x:Key="ViewModel" />
-    </Window.Resources>
-
-    <Grid x:Name="MainGrid" DataContext="{StaticResource ViewModel}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

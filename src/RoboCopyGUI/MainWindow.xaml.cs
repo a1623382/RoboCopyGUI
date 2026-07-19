@@ -13,11 +13,15 @@ public sealed partial class MainWindow : Window
 {
     private MicaController? _micaController;
     private SystemBackdropConfiguration? _backdropConfiguration;
+    private readonly MainViewModel _viewModel;
 
     public MainWindow()
     {
         InitializeComponent();
         Title = "RoboCopy GUI";
+
+        _viewModel = new MainViewModel();
+        MainGrid.DataContext = _viewModel;
 
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
@@ -26,8 +30,6 @@ public sealed partial class MainWindow : Window
 
         Closed += Window_Closed;
     }
-
-    private MainViewModel? GetViewModel() => Root.DataContext as MainViewModel;
 
     private void TrySetMicaBackdrop()
     {
@@ -66,13 +68,10 @@ public sealed partial class MainWindow : Window
 
     private async void Settings_Click(object sender, RoutedEventArgs e)
     {
-        var vm = GetViewModel();
-        if (vm is null) return;
-
         var settingsPanel = new SettingsPanel
         {
-            DataContext = vm,
-            Settings = vm.Settings
+            DataContext = _viewModel,
+            Settings = _viewModel.Settings
         };
 
         var dialog = new ContentDialog
@@ -89,9 +88,6 @@ public sealed partial class MainWindow : Window
 
     private async void LoadQueue_Click(object sender, RoutedEventArgs e)
     {
-        var vm = GetViewModel();
-        if (vm is null) return;
-
         var picker = new FileOpenPicker();
         var hwnd = WindowNative.GetWindowHandle(this);
         InitializeWithWindow.Initialize(picker, hwnd);
@@ -99,14 +95,11 @@ public sealed partial class MainWindow : Window
 
         var file = await picker.PickSingleFileAsync();
         if (file is not null)
-            await vm.ImportQueueCommand.ExecuteAsync(file.Path);
+            await _viewModel.ImportQueueCommand.ExecuteAsync(file.Path);
     }
 
     private async void ExportBat_Click(object sender, RoutedEventArgs e)
     {
-        var vm = GetViewModel();
-        if (vm is null) return;
-
         var picker = new FileSavePicker();
         var hwnd = WindowNative.GetWindowHandle(this);
         InitializeWithWindow.Initialize(picker, hwnd);
@@ -115,14 +108,11 @@ public sealed partial class MainWindow : Window
 
         var file = await picker.PickSaveFileAsync();
         if (file is not null)
-            await vm.ExportBatCommand.ExecuteAsync(file.Path);
+            await _viewModel.ExportBatCommand.ExecuteAsync(file.Path);
     }
 
     private async void ExportPs1_Click(object sender, RoutedEventArgs e)
     {
-        var vm = GetViewModel();
-        if (vm is null) return;
-
         var picker = new FileSavePicker();
         var hwnd = WindowNative.GetWindowHandle(this);
         InitializeWithWindow.Initialize(picker, hwnd);
@@ -131,7 +121,7 @@ public sealed partial class MainWindow : Window
 
         var file = await picker.PickSaveFileAsync();
         if (file is not null)
-            await vm.ExportPowerShellCommand.ExecuteAsync(file.Path);
+            await _viewModel.ExportPowerShellCommand.ExecuteAsync(file.Path);
     }
 
     private void Window_Closed(object sender, WindowEventArgs args)
