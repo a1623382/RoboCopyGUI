@@ -6,7 +6,7 @@ public sealed class AppSettings
     public bool AutoSaveQueue { get; set; } = true;
     public bool ConfirmBeforeDelete { get; set; } = true;
     public bool AutoStartQueueOnLaunch { get; set; } = false;
-    public int MaxLogEntries { get; set; } = 5000;
+    public double MaxLogEntries { get; set; } = 5000;
     public bool ShowNotifications { get; set; } = true;
     public string DefaultSourcePath { get; set; } = string.Empty;
     public string DefaultDestinationPath { get; set; } = string.Empty;
