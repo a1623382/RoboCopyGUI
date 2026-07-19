@@ -16,18 +16,26 @@ public sealed partial class MainWindow : Window
 
     public MainWindow()
     {
-        InitializeComponent();
-        Title = "RoboCopy GUI";
+        try
+        {
+            InitializeComponent();
+            Title = "RoboCopy GUI";
 
-        _viewModel = new MainViewModel();
-        MainGrid.DataContext = _viewModel;
+            _viewModel = new MainViewModel();
+            MainGrid.DataContext = _viewModel;
 
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(TitleArea);
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(TitleArea);
 
-        TrySetMicaBackdrop();
+            TrySetMicaBackdrop();
 
-        Closed += Window_Closed;
+            Closed += Window_Closed;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"MainWindow init error: {ex}");
+            throw;
+        }
     }
 
     private void TrySetMicaBackdrop()
