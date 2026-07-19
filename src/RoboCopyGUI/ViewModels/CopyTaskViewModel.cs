@@ -25,11 +25,9 @@ public sealed partial class CopyTaskViewModel : ObservableObject
     public CopyTask Model => _task;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(RemoveCommand))]
     private string _source;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(RemoveCommand))]
     private string _destination;
 
     [ObservableProperty]
