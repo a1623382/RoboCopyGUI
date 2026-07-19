@@ -98,29 +98,24 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
-                                        Width="4" CornerRadius="2" Margin="0,0,8,0"
-                                        Background="Gray" />
-
-                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                <TextBlock Grid.Row="0" Grid.Column="0"
                                            Text="{x:Bind Source, Mode=OneWay}"
                                            Style="{StaticResource BodyStrongTextBlockStyle}"
                                            TextTrimming="CharacterEllipsis" />
-                                <TextBlock Grid.Row="1" Grid.Column="1"
+                                <TextBlock Grid.Row="1" Grid.Column="0"
                                            Text="{x:Bind Destination, Mode=OneWay}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            TextTrimming="CharacterEllipsis" FontSize="12" />
-                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
                                     <TextBlock Text="{x:Bind Status, Mode=OneWay}" FontSize="11" />
                                     <TextBlock Text="{x:Bind PresetName, Mode=OneWay}" FontSize="11"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
 
-                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0">
+                                <Grid Grid.Row="3" Grid.Column="0" Margin="0,6,0,0">
                                     <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}"
                                                  Maximum="100" Style="{StaticResource FatProgressBar}" />
                                     <TextBlock FontSize="12" FontWeight="Bold" Foreground="White"
