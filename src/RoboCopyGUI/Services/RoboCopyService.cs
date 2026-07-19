@@ -44,6 +44,11 @@ public sealed partial class RoboCopyService
 
         var arguments = $"\"{source}\" \"{dest}\"{extraFiles} {options.BuildArguments()}";
 
+        if (!options.DryRun)
+            FileLogger.Instance?.Info($"RoboCopy cmd: robocopy {arguments}");
+        else
+            FileLogger.Instance?.Info($"RoboCopy DRY RUN: robocopy {arguments}");
+
         var startInfo = new ProcessStartInfo
         {
             FileName = RoboCopyPath,
@@ -190,11 +195,15 @@ public sealed partial class RoboCopyService
     {
         logLines.Add(line);
 
+        if (logLines.Count <= 50)
+            FileLogger.Instance?.Debug($"RC: {line}");
+
         var pctMatch = Regex.Match(line, @"(\d+(?:\.\d+)?)\s*%");
         if (pctMatch.Success && double.TryParse(pctMatch.Groups[1].Value, System.Globalization.NumberStyles.Float,
                 System.Globalization.CultureInfo.InvariantCulture, out var pct))
         {
             lastPercent = pct;
+            FileLogger.Instance?.Debug($"Progress: {pct}%");
         }
 
         var fileMatch = Regex.Match(line, @"(?:New File|Newer)\s+\S+\s+(\S+)", RegexOptions.IgnoreCase);

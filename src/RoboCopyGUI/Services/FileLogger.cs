@@ -4,6 +4,8 @@ namespace RoboCopyGUI.Services;
 
 public sealed class FileLogger : IDisposable
 {
+    public static FileLogger? Instance { get; set; }
+
     private readonly string _logDirectory;
     private readonly object _lock = new();
     private StreamWriter? _writer;
