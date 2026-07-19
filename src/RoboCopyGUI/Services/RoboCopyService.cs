@@ -50,6 +50,14 @@ public sealed partial class RoboCopyService
 
         var source = options.Source.TrimEnd('\\');
         var dest = options.Destination.TrimEnd('\\');
+
+        if (Directory.Exists(source))
+        {
+            var folderName = Path.GetFileName(source);
+            if (!string.Equals(Path.GetFileName(dest), folderName, StringComparison.OrdinalIgnoreCase))
+                dest = Path.Combine(dest, folderName);
+        }
+
         var extraFiles = options.ExtraFiles.Length > 0
             ? " " + string.Join(" ", options.ExtraFiles.Select(f => $"\"{f}\""))
             : string.Empty;

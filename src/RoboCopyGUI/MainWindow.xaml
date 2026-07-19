@@ -119,9 +119,12 @@
                                     <TextBlock Text="{x:Bind PresetName}" FontSize="11"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
-                                <ProgressBar Grid.Row="3" Grid.Column="1"
-                                             Value="{x:Bind ProgressPercent}" Maximum="100"
-                                             Margin="0,4,0,0" Height="4" />
+                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,4,0,0">
+                                    <ProgressBar Value="{x:Bind ProgressPercent}" Maximum="100" Height="8" />
+                                    <TextBlock Text="{x:Bind ProgressPercent}" FontSize="10"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                </Grid>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -134,11 +137,18 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
 
-                <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="4" Margin="0,8,0,0">
-                    <Button Content="上移" Click="MoveUp_Click" Style="{StaticResource SubtleButtonStyle}" />
-                    <Button Content="下移" Click="MoveDown_Click" Style="{StaticResource SubtleButtonStyle}" />
-                    <Button Content="复制" Click="Duplicate_Click" Style="{StaticResource SubtleButtonStyle}" />
-                    <Button Content="删除" Click="Remove_Click" Style="{StaticResource SubtleButtonStyle}" />
+                <StackPanel Grid.Row="3" Spacing="4" Margin="0,8,0,0">
+                    <Grid>
+                        <ProgressBar Value="{Binding OverallProgress}" Maximum="100" Height="6" />
+                        <TextBlock Text="{Binding OverallProgressText}" FontSize="10"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <Button Content="上移" Click="MoveUp_Click" Style="{StaticResource SubtleButtonStyle}" />
+                        <Button Content="下移" Click="MoveDown_Click" Style="{StaticResource SubtleButtonStyle}" />
+                        <Button Content="复制" Click="Duplicate_Click" Style="{StaticResource SubtleButtonStyle}" />
+                        <Button Content="删除" Click="Remove_Click" Style="{StaticResource SubtleButtonStyle}" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 
@@ -189,6 +199,24 @@
             </Grid>
         </Grid>
 
-        <TextBlock Grid.Row="2" Text="就绪" FontSize="12" Padding="16,4" />
+        <Grid Grid.Row="2" Padding="16,4" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{Binding StatusText}" FontSize="12"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" FontSize="11"
+                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" VerticalAlignment="Center">
+                <Run Text="任务:" /><Run Text="{Binding Tasks.Count}" />
+            </TextBlock>
+            <TextBlock Grid.Column="2" FontSize="11"
+                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" VerticalAlignment="Center">
+                <Run Text="日志:" /><Run Text="{Binding LogEntries.Count}" />
+            </TextBlock>
+        </Grid>
     </Grid>
 </Window>
