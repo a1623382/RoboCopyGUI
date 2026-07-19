@@ -2,16 +2,16 @@
 
 <div align="center">
 
-![AI Assisted](https://img.shields.io/badge/AI-Assisted-FF6F00?style=for-the-badge&logo=openai&logoColor=white)
+![AI Assisted](https://img.shields.io/badge/AI-MiMo--V2.5--Pro-FF6F00?style=for-the-badge&logo=xiaomi&logoColor=white)
 ![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![WinUI 3](https://img.shields.io/badge/WinUI-3-0078D4?style=for-the-badge&logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 **A modern GUI for Windows RoboCopy / 一款现代化的 Windows RoboCopy 图形界面工具**
 
-> **本项目由 AI (OpenCode) 辅助生成。**
+> **本项目由 AI (MiMo-V2.5-Pro by Xiaomi) 辅助生成。**
 >
-> **This project was built with AI assistance ([OpenCode](https://github.com/opencode-ai/opencode)).**
+> **This project was built with AI assistance (MiMo-V2.5-Pro by Xiaomi).**
 
 </div>
 
@@ -147,14 +147,14 @@ MIT License. See [LICENSE](LICENSE).
 
 - Built with [Windows App SDK](https://github.com/microsoft/WindowsAppSDK) (WinUI 3)
 - MVVM powered by [CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet)
-- AI-assisted development with [OpenCode](https://github.com/opencode-ai/opencode)
+- AI-assisted development with [MiMo-V2.5-Pro](https://github.com/XiaoMi) by Xiaomi
 
 ---
 
 <div align="center">
 
-**本项目代码由 AI (OpenCode) 辅助生成**
+**本项目代码由 AI (MiMo-V2.5-Pro by Xiaomi) 辅助生成**
 
-**Made with AI assistance**
+**Made with AI assistance (MiMo-V2.5-Pro by Xiaomi)**
 
 </div>

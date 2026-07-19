@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using RoboCopyGUI.ViewModels;
 using WinRT;
+using WinRT.Interop;
+using Windows.Storage.Pickers;
 
 namespace RoboCopyGUI;
 
@@ -43,6 +45,48 @@ public sealed partial class MainWindow : Window
 
         _micaController.AddSystemBackdropTarget(
             this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+    }
+
+    private void AddTask_Click(object sender, RoutedEventArgs e)
+    {
+        _viewModel.SourcePath = SourceBox.Text;
+        _viewModel.DestinationPath = DestBox.Text;
+        _viewModel.AddTaskCommand.Execute(null);
+        SourceBox.Text = string.Empty;
+        DestBox.Text = string.Empty;
+    }
+
+    private async void BrowseSource_Click(object sender, RoutedEventArgs e)
+    {
+        var folder = await PickFolderAsync();
+        if (folder is not null)
+        {
+            SourceBox.Text = folder.Path;
+            _viewModel.SourcePath = folder.Path;
+        }
+    }
+
+    private async void BrowseDest_Click(object sender, RoutedEventArgs e)
+    {
+        var folder = await PickFolderAsync();
+        if (folder is not null)
+        {
+            DestBox.Text = folder.Path;
+            _viewModel.DestinationPath = folder.Path;
+        }
+    }
+
+    private async Task<Windows.Storage.StorageFolder?> PickFolderAsync()
+    {
+        var picker = new FolderPicker();
+        InitializeWithWindow.Initialize(picker, GetWindowHandle());
+        picker.FileTypeFilter.Add("*");
+        return await picker.PickSingleFolderAsync();
+    }
+
+    private IntPtr GetWindowHandle()
+    {
+        return WindowNative.GetWindowHandle(this);
     }
 
     private void Window_Closed(object sender, WindowEventArgs args)
