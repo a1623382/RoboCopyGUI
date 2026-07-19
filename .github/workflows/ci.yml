@@ -33,8 +33,6 @@ jobs:
         -r win-x64
         --no-restore
         -p:Platform=x64
-        -p:WindowsAppSDKSelfContained=true
-        -p:SelfContained=true
 
     - name: Publish
       run: >
@@ -43,8 +41,6 @@ jobs:
         -r win-x64
         --no-build
         -p:Platform=x64
-        -p:WindowsAppSDKSelfContained=true
-        -p:SelfContained=true
         -o publish/
 
     - name: Upload build artifact
