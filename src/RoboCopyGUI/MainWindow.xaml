@@ -123,7 +123,6 @@
                                 </StackPanel>
                                 <ProgressBar Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                                              Value="{x:Bind ProgressPercent}" Maximum="100"
-                                             Visibility="{x:Bind IsRunning}"
                                              Margin="0,4,0,0" Height="4" />
                             </Grid>
                         </DataTemplate>
