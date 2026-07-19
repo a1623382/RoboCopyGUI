@@ -1,9 +1,82 @@
 <UserControl
     x:Class="RoboCopyGUI.Controls.PresetPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:m="using:RoboCopyGUI.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
 
-    <StackPanel>
-        <TextBlock Text="Presets" Style="{StaticResource BodyStrongTextBlockStyle}" />
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Presets" Style="{StaticResource BodyStrongTextBlockStyle}"
+                   Margin="0,0,0,8" />
+
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Spacing="4">
+                <TextBox PlaceholderText="Preset name..." x:Name="TxtPresetName"
+                         Margin="0,0,0,4" />
+                <TextBox PlaceholderText="Description (optional)..." x:Name="TxtPresetDesc" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="Save" VerticalAlignment="Bottom"
+                    Click="SavePreset_Click" Margin="8,0,0,0"
+                    Style="{StaticResource AccentButtonStyle}" />
+        </Grid>
+
+        <ListView Grid.Row="2" x:Name="PresetsList" Padding="0"
+                  SelectionMode="Single" IsItemClickEnabled="True">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="m:RoboCopyPreset">
+                    <Grid Padding="8" CornerRadius="6"
+                          Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                          Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{Binding Description}" FontSize="12"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock FontSize="11"
+                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                                <Run Text="{Binding CreatedAt, StringFormat='yyyy-MM-dd HH:mm'}" />
+                            </TextBlock>
+                        </StackPanel>
+                        <Button Grid.Column="1" Style="{StaticResource SubtleButtonStyle}"
+                                Click="DeletePreset_Click" Tag="{Binding Name}"
+                                ToolTipService.ToolTip="Delete Preset"
+                                VerticalAlignment="Top">
+                            <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="OrangeRed" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+            <Button Content="Apply to Selected" Click="ApplyPreset_Click"
+                    Style="{StaticResource SubtleButtonStyle}">
+                <Button.Icon><FontIcon Glyph="&#xE71A;" /></Button.Icon>
+            </Button>
+        </StackPanel>
+    </Grid>
 </UserControl>
