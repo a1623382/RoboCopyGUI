@@ -119,20 +119,14 @@
                                     <TextBlock Text="{x:Bind PresetName}" FontSize="11"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
-                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Height="20" CornerRadius="10"
-                                      Background="#33FFFFFF">
-                                    <ProgressBar Value="{x:Bind ProgressPercent}" Maximum="100" Height="20"
-                                                 CornerRadius="10"
-                                                 Foreground="{ThemeResource SystemAccentColor}"
-                                                 Background="Transparent"
-                                                 BorderThickness="0" />
-                                    <Border CornerRadius="10">
-                                        <TextBlock FontSize="11" FontWeight="Bold"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Run Text="{x:Bind ProgressPercent, Mode=OneWay}" /><Run Text="%" />
-                                        </TextBlock>
-                                    </Border>
+                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Height="20">
+                                    <ProgressBar Value="{x:Bind ProgressPercent, Mode=OneWay}" Maximum="100"
+                                                 Height="20" CornerRadius="10"
+                                                 Foreground="{ThemeResource SystemAccentColor}" />
+                                    <TextBlock FontSize="11" FontWeight="Bold" Foreground="White"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Run Text="{x:Bind ProgressPercent, Mode=OneWay}" /><Run Text="%" />
+                                    </TextBlock>
                                 </Grid>
                             </Grid>
                         </DataTemplate>
@@ -146,19 +140,23 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
 
-                <StackPanel Grid.Row="3" Spacing="4" Margin="0,8,0,0">
-                    <Grid Height="20" CornerRadius="10" Margin="0,0,0,4" Background="#33FFFFFF">
-                        <ProgressBar Value="{Binding OverallProgress}" Maximum="100" Height="20"
-                                     CornerRadius="10"
-                                     Foreground="{ThemeResource SystemAccentColor}"
-                                     Background="Transparent"
-                                     BorderThickness="0" />
-                        <Border CornerRadius="10">
-                            <TextBlock FontSize="11" FontWeight="Bold" Foreground="White"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       Text="{Binding OverallProgressText}" />
-                        </Border>
+                <StackPanel Grid.Row="3" Spacing="8" Margin="0,8,0,0">
+                    <Grid Height="20" CornerRadius="10">
+                        <ProgressBar Value="{Binding OverallProgress}" Maximum="100"
+                                     Height="20" CornerRadius="10"
+                                     Foreground="{ThemeResource SystemAccentColor}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock FontSize="11" FontWeight="Bold" Foreground="White">
+                                <Run Text="{Binding OverallProgressText}" />
+                            </TextBlock>
+                            <TextBlock FontSize="11" Foreground="#AAFFFFFF"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding StatusText}" TextTrimming="CharacterEllipsis"
+                                       MaxWidth="250" />
+                        </StackPanel>
                     </Grid>
+
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <Button Content="上移" Click="MoveUp_Click" Style="{StaticResource SubtleButtonStyle}" />
                         <Button Content="下移" Click="MoveDown_Click" Style="{StaticResource SubtleButtonStyle}" />
