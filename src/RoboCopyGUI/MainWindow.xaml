@@ -119,11 +119,17 @@
                                     <TextBlock Text="{x:Bind PresetName}" FontSize="11"
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                                 </StackPanel>
-                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,4,0,0">
-                                    <ProgressBar Value="{x:Bind ProgressPercent}" Maximum="100" Height="8" />
-                                    <TextBlock Text="{x:Bind ProgressPercent}" FontSize="10"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                               Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Height="20" CornerRadius="10">
+                                    <ProgressBar Value="{x:Bind ProgressPercent}" Maximum="100" Height="20"
+                                                 CornerRadius="10"
+                                                 Foreground="{ThemeResource SystemAccentColor}" />
+                                    <Border CornerRadius="10" Background="#44000000">
+                                        <TextBlock FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Run Text="{x:Bind ProgressPercent}" /><Run Text="%" />
+                                        </TextBlock>
+                                    </Border>
                                 </Grid>
                             </Grid>
                         </DataTemplate>
@@ -138,10 +144,15 @@
                 </ListView>
 
                 <StackPanel Grid.Row="3" Spacing="4" Margin="0,8,0,0">
-                    <Grid>
-                        <ProgressBar Value="{Binding OverallProgress}" Maximum="100" Height="6" />
-                        <TextBlock Text="{Binding OverallProgressText}" FontSize="10"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Grid Height="20" CornerRadius="10" Margin="0,0,0,4">
+                        <ProgressBar Value="{Binding OverallProgress}" Maximum="100" Height="20"
+                                     CornerRadius="10"
+                                     Foreground="{ThemeResource SystemAccentColor}" />
+                        <Border CornerRadius="10" Background="#44000000">
+                            <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Text="{Binding OverallProgressText}" />
+                        </Border>
                     </Grid>
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <Button Content="上移" Click="MoveUp_Click" Style="{StaticResource SubtleButtonStyle}" />

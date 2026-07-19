@@ -12,27 +12,6 @@ public sealed partial class RoboCopyService
 
     private Process? _currentProcess;
 
-    [GeneratedRegex(@"(\d+(?:\.\d+)?)\s*%")]
-    private static partial Regex PercentPattern();
-
-    [GeneratedRegex(@"([\d,\.]+)\s*([\w/]*)\s+([\d,\.]+)\s*([\w/]*)")]
-    private static partial Regex FileSizePattern();
-
-    [GeneratedRegex(@"^\s*([\d\.]+)%\s")]
-    private static partial Regex LinePercentPattern();
-
-    [GeneratedRegex(@"^\s*New File\s+[\w\.]+\s+([\d\.]+)\s+(.+)$")]
-    private static partial Regex NewFilePattern();
-
-    [GeneratedRegex(@"^\s*Newer\s+[\w\.]+\s+([\d\.]+)\s+(.+)$")]
-    private static partial Regex NewerFilePattern();
-
-    [GeneratedRegex(@"^\s*Older\s+[\w\.]+\s+([\d\.]+)\s+(.+)$")]
-    private static partial Regex OlderFilePattern();
-
-    [GeneratedRegex(@"^\s*EXTRA File\s+[\w\.]+\s+([\d\.]+)\s+(.+)$")]
-    private static partial Regex ExtraFilePattern();
-
     public event EventHandler<string>? RawOutputReceived;
 
     public async Task<RoboCopyResult> ExecuteAsync(
@@ -83,46 +62,73 @@ public sealed partial class RoboCopyService
         {
             _currentProcess = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
 
-            var outputBuffer = new List<char>();
-            long lastParsedBytes = 0;
-            long lastParsedTotalBytes = 0;
             long filesCopied = 0;
             long totalFiles = 0;
             double lastPercent = 0;
             string currentFile = string.Empty;
-            string speedInfo = string.Empty;
 
-            _currentProcess.OutputDataReceived += (_, e) =>
+            _currentProcess.Start();
+
+            await using var cancelReg = cancellationToken.Register(() =>
             {
-                if (e.Data is null) return;
-                ParseOutputLine(e.Data, outputBuffer, logLines, progress,
-                    ref lastParsedBytes, ref lastParsedTotalBytes,
-                    ref filesCopied, ref totalFiles,
-                    ref lastPercent, ref currentFile, ref speedInfo);
-            };
+                try { if (!_currentProcess.HasExited) _currentProcess.Kill(entireProcessTree: true); }
+                catch (InvalidOperationException) { }
+            });
+
+            var stdoutTask = Task.Run(async () =>
+            {
+                var reader = _currentProcess.StandardOutput;
+                var buffer = new char[4096];
+                var lineBuffer = new StringBuilder();
+
+                while (true)
+                {
+                    int bytesRead = await reader.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0) break;
+
+                    for (int i = 0; i < bytesRead; i++)
+                    {
+                        char c = buffer[i];
+                        if (c is '\r' or '\n')
+                        {
+                            if (lineBuffer.Length > 0)
+                            {
+                                var line = lineBuffer.ToString().Trim();
+                                if (!string.IsNullOrWhiteSpace(line))
+                                {
+                                    ParseProgressLine(line, logLines, progress,
+                                        ref filesCopied, ref totalFiles,
+                                        ref lastPercent, ref currentFile);
+                                }
+                                lineBuffer.Clear();
+                            }
+                        }
+                        else
+                        {
+                            lineBuffer.Append(c);
+                        }
+                    }
+                }
+
+                if (lineBuffer.Length > 0)
+                {
+                    var line = lineBuffer.ToString().Trim();
+                    if (!string.IsNullOrWhiteSpace(line))
+                        ParseProgressLine(line, logLines, progress,
+                            ref filesCopied, ref totalFiles,
+                            ref lastPercent, ref currentFile);
+                }
+            }, cts.Token);
 
             _currentProcess.ErrorDataReceived += (_, e) =>
             {
                 if (e.Data is null) return;
                 logLines.Add($"[ERROR] {e.Data}");
             };
-
-            _currentProcess.Start();
-            _currentProcess.BeginOutputReadLine();
             _currentProcess.BeginErrorReadLine();
 
-            await using (cancellationToken.Register(() =>
-            {
-                try
-                {
-                    if (!_currentProcess.HasExited)
-                        _currentProcess.Kill(entireProcessTree: true);
-                }
-                catch (InvalidOperationException) { }
-            }))
-            {
-                await _currentProcess.WaitForExitAsync(cts.Token);
-            }
+            await stdoutTask;
+            await _currentProcess.WaitForExitAsync(cts.Token);
 
             stopwatch.Stop();
 
@@ -136,7 +142,7 @@ public sealed partial class RoboCopyService
                 ExitCode = exitCode,
                 Message = RoboCopyResult.InterpretExitCode(exitCode),
                 TotalFiles = filesCopied,
-                TotalBytes = lastParsedBytes,
+                TotalBytes = lastPercent > 0 ? (long)(lastPercent * 100) : 0,
                 Duration = stopwatch.Elapsed,
                 LogLines = logLines.AsReadOnly()
             };
@@ -172,31 +178,45 @@ public sealed partial class RoboCopyService
         }
     }
 
-    private void ParseOutputLine(
+    private void ParseProgressLine(
         string line,
-        List<char> outputBuffer,
         List<string> logLines,
         IProgress<RoboCopyProgress>? progress,
-        ref long bytesCopied,
-        ref long totalBytes,
         ref long filesCopied,
         ref long totalFiles,
         ref double lastPercent,
-        ref string currentFile,
-        ref string speedInfo)
+        ref string currentFile)
     {
-        RawOutputReceived?.Invoke(this, line);
+        logLines.Add(line);
 
-        if (line.Contains('\r'))
+        var pctMatch = Regex.Match(line, @"(\d+(?:\.\d+)?)\s*%");
+        if (pctMatch.Success && double.TryParse(pctMatch.Groups[1].Value, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var pct))
         {
-            var segments = line.Split('\r', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var segment in segments)
-            {
-                ProcessSegment(segment.Trim(), outputBuffer, logLines, progress,
-                    ref bytesCopied, ref totalBytes,
-                    ref filesCopied, ref totalFiles,
-                    ref lastPercent, ref currentFile, ref speedInfo);
-            }
+            lastPercent = pct;
+        }
+
+        var fileMatch = Regex.Match(line, @"(?:New File|Newer)\s+\S+\s+(\S+)", RegexOptions.IgnoreCase);
+        if (fileMatch.Success)
+        {
+            currentFile = fileMatch.Groups[1].Value.Trim();
+            filesCopied++;
+        }
+
+        var filesMatch = Regex.Match(line, @"Files\s*:\s*([\d,]+)");
+        if (filesMatch.Success && long.TryParse(filesMatch.Groups[1].Value.Replace(",", ""), out var files))
+            totalFiles = files;
+
+        progress?.Report(new RoboCopyProgress
+        {
+            Percent = lastPercent,
+            CurrentFile = currentFile,
+            FilesCopied = filesCopied,
+            TotalFiles = totalFiles,
+            RawLine = line
+        });
+    }
+}
         }
         else
         {
