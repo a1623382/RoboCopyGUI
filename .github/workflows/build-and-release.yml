@@ -1,0 +1,141 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  SOLUTION_PATH: 'RoboCopyGUI.sln'
+  PROJECT_PATH: 'src/RoboCopyGUI/RoboCopyGUI.csproj'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        rid: [win-x64, win-arm64]
+      fail-fast: false
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET ${{ env.DOTNET_VERSION }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }} -r ${{ matrix.rid }}
+
+    - name: Build
+      run: >
+        dotnet build ${{ env.PROJECT_PATH }}
+        -c Release
+        -r ${{ matrix.rid }}
+        --no-restore
+        -p:Platform=AnyCPU
+        -p:WindowsAppSDKSelfContained=true
+        -p:SelfContained=true
+        -p:PublishSingleFile=false
+
+    - name: Publish
+      run: >
+        dotnet publish ${{ env.PROJECT_PATH }}
+        -c Release
+        -r ${{ matrix.rid }}
+        --no-build
+        -p:WindowsAppSDKSelfContained=true
+        -p:SelfContained=true
+        -p:PublishSingleFile=false
+        -p:EnableMsixTooling=false
+        -o publish/${{ matrix.rid }}
+
+    - name: Create artifact (win-x64)
+      if: matrix.rid == 'win-x64'
+      uses: actions/upload-artifact@v4
+      with:
+        name: RoboCopyGUI-win-x64
+        path: publish/win-x64/
+
+    - name: Create artifact (win-arm64)
+      if: matrix.rid == 'win-arm64'
+      uses: actions/upload-artifact@v4
+      with:
+        name: RoboCopyGUI-win-arm64
+        path: publish/win-arm64/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - name: Download win-x64 artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: RoboCopyGUI-win-x64
+        path: dist/win-x64
+
+    - name: Download win-arm64 artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: RoboCopyGUI-win-arm64
+        path: dist/win-arm64
+
+    - name: Package win-x64
+      run: |
+        cd dist/win-x64
+        zip -r ../../RoboCopyGUI-win-x64.zip .
+
+    - name: Package win-arm64
+      run: |
+        cd dist/win-arm64
+        zip -r ../../RoboCopyGUI-win-arm64.zip .
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        if [ -z "$PREV_TAG" ]; then
+          echo "changes<<EOF" >> $GITHUB_OUTPUT
+          git log --oneline --no-decorate -20 >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "changes<<EOF" >> $GITHUB_OUTPUT
+          git log ${PREV_TAG}..HEAD --oneline --no-decorate >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: RoboCopy GUI ${{ github.ref_name }}
+        body: |
+          ## RoboCopy GUI ${{ github.ref_name }}
+
+          ### Downloads
+          | Architecture | File |
+          |---|---|
+          | x64 | `RoboCopyGUI-win-x64.zip` |
+          | ARM64 | `RoboCopyGUI-win-arm64.zip` |
+
+          ### Changes
+          ${{ steps.changelog.outputs.changes }}
+
+          ### Requirements
+          - Windows 10 version 1903+ (build 18362) or Windows 11
+          - .NET 8 Runtime (if not self-contained)
+
+          > This software was built with AI assistance ([OpenCode](https://github.com/opencode-ai/opencode))
+        files: |
+          RoboCopyGUI-win-x64.zip
+          RoboCopyGUI-win-arm64.zip
+        draft: false
+        prerelease: false
