@@ -14,6 +14,8 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly TaskQueuePersistence _queuePersistence = new();
     private readonly BatchScriptExporter _batchExporter = new();
     private readonly FileLogger _logger = new();
+    private CancellationTokenSource? _cts;
+    private bool _isProcessingQueue;
 
     public MainViewModel()
     {
