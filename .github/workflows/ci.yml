@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: 'src/RoboCopyGUI/RoboCopyGUI.csproj'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET ${{ env.DOTNET_VERSION }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: Build
+      run: >
+        dotnet build ${{ env.PROJECT_PATH }}
+        -c Release
+        -r win-x64
+        --no-restore
+        -p:WindowsAppSDKSelfContained=true
+        -p:SelfContained=true
+
+    - name: Publish
+      run: >
+        dotnet publish ${{ env.PROJECT_PATH }}
+        -c Release
+        -r win-x64
+        --no-build
+        -p:WindowsAppSDKSelfContained=true
+        -p:SelfContained=true
+        -o publish/
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: RoboCopyGUI-ci-${{ github.sha }}
+        path: publish/
+        retention-days: 7
