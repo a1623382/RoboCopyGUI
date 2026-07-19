@@ -1,12 +1,22 @@
 <Application
     x:Class="RoboCopyGUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RoboCopyGUI"
+    xmlns:converters="using:RoboCopyGUI.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary Source="Styles/CardStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
+            <converters:StatusToStringConverter x:Key="StatusToStringConverter" />
+            <converters:LogLevelToColorConverter x:Key="LogLevelToColorConverter" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BytesToHumanConverter x:Key="BytesToHumanConverter" />
+            <converters:DurationConverter x:Key="DurationConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
