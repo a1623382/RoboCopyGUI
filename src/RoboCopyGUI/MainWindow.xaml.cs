@@ -19,6 +19,14 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
         Title = "RoboCopy GUI";
 
+        try
+        {
+            var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "app.ico");
+            if (File.Exists(iconPath))
+                this.AppWindow.SetIcon(iconPath);
+        }
+        catch { }
+
         _viewModel = new MainViewModel();
         MainGrid.DataContext = _viewModel;
 

@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="TitleArea" Grid.Row="0" Height="48" Padding="16,0,8,0">
+        <Grid Grid.Row="0" Padding="16,32,8,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -30,7 +30,7 @@
 
             <CommandBar Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                         DefaultLabelPosition="Right" Background="Transparent" IsOpen="False"
-                        Margin="0,0,0,2">
+                        Margin="0,0,80,0">
                 <AppBarButton Icon="Add" Label="添加任务" Click="AddTask_Click" />
                 <AppBarButton Icon="Play" Label="开始队列" Click="StartQueue_Click" />
                 <AppBarButton Icon="Stop" Label="取消" Click="CancelQueue_Click" />
